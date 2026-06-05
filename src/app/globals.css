@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg:           #0a0e1a;
+  --bg2:          #0d1220;
+  --bg3:          #1a2235;
+  --surface:      rgba(255, 255, 255, 0.06);
+  --border:       rgba(255, 255, 255, 0.10);
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --cyan:         #00E8E4;
+  --cyan-bg:      rgba(0, 232, 228, 0.10);
+  --cyan-border:  rgba(0, 232, 228, 0.38);
+  --muted:        #8b95b0;
+  --dim:          #4a5568;
+  --gold:         #f59e0b;
+  --green:        #4ade80;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  background: var(--bg);
+  color: #ffffff;
+  font-family: var(--font-sans, system-ui, sans-serif);
+}
+
+/* Barlow Condensed for stat numbers */
+.font-stat {
+  font-family: 'Barlow Condensed', system-ui, sans-serif;
+  font-weight: 700;
+}
+
+/* Glass card */
+.glass {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: 14px;
+}
+
+/* Fixture card glass with team color tints */
+.fixture-glass {
+  position: relative;
+  border-radius: 14px;
+  border: 0.5px solid var(--border-strong);
+  overflow: hidden;
+}
+
+/* Metric card — cyan tint */
+.metric-card {
+  background: rgba(0, 232, 228, 0.07);
+  border: 0.5px solid rgba(0, 232, 228, 0.18);
+  border-radius: 10px;
+}
+
+/* Nav tab states */
+.nav-tab {
+  color: var(--muted);
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+.nav-tab:hover {
+  color: var(--cyan);
+  background: var(--cyan-bg);
+  border-bottom-color: var(--cyan-border);
+}
+.nav-tab.active {
+  color: var(--cyan);
+  background: transparent;
+  border-bottom-color: transparent;
+}
+
+/* Score inputs — glass style */
+input[type="number"].score-input {
+  -webkit-appearance: none;
+  -moz-appearance: textfield;
+  appearance: none;
+  background-color: rgba(255, 255, 255, 0.09) !important;
+  border: 0.5px solid rgba(255, 255, 255, 0.20) !important;
+  color: #ffffff !important;
+  border-radius: 8px;
+}
+input[type="number"].score-input::-webkit-outer-spin-button,
+input[type="number"].score-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"].score-input:focus {
+  background-color: rgba(255, 255, 255, 0.13) !important;
+  border-color: rgba(255, 255, 255, 0.40) !important;
+  outline: none;
+}
+
+/* Broadcaster pills */
+.pill-fox  { background: rgba(12,68,124,0.30); color: #85b7eb; border-color: rgba(55,138,221,0.30); }
+.pill-fs1  { background: rgba(12,68,124,0.25); color: #7eb3e8; border-color: rgba(55,138,221,0.25); }
+.pill-tele { background: rgba(113,43,19,0.30); color: #f0997b; border-color: rgba(216,90,48,0.30); }
+.pill-pea  { background: rgba(99,153,34,0.20); color: #97c459; border-color: rgba(99,153,34,0.25); }
+
+/* Points badges */
+.badge-3pt { background: rgba(74,222,128,0.15); color: #4ade80; border-color: rgba(74,222,128,0.30); }
+.badge-1pt { background: rgba(245,158,11,0.15); color: #fbbf24; border-color: rgba(245,158,11,0.30); }
+.badge-0pt { background: rgba(139,149,176,0.10); color: var(--muted); border-color: var(--border); }
+
+/* Live indicator pulse */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.4; }
+}
+.live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ef4444;
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
