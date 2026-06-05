@@ -14,7 +14,7 @@ export default async function DashboardPage() {
     .select(`
       *,
       home_team:teams!fixtures_home_team_id_fkey(*),
-      away_team:teams!fixtures_away_team_id_fkey(*)
+      away_team:teams!fixtures_away_team_id_fkey(*),
     `)
     .eq('status', 'scheduled')
     .gte('kickoff_et', now)
@@ -27,7 +27,7 @@ export default async function DashboardPage() {
     .select(`
       *,
       home_team:teams!fixtures_home_team_id_fkey(*),
-      away_team:teams!fixtures_away_team_id_fkey(*)
+      away_team:teams!fixtures_away_team_id_fkey(*),
     `)
     .eq('status', 'live')
     .order('kickoff_et', { ascending: true })
@@ -38,7 +38,7 @@ export default async function DashboardPage() {
     .select(`
       *,
       home_team:teams!fixtures_home_team_id_fkey(*),
-      away_team:teams!fixtures_away_team_id_fkey(*)
+      away_team:teams!fixtures_away_team_id_fkey(*),
     `)
     .eq('status', 'finished')
     .order('kickoff_et', { ascending: false })
