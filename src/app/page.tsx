@@ -6,24 +6,22 @@ export const revalidate = 60
 export default async function DashboardPage() {
   const supabase = await createServerSupabaseClient()
 
-  const now = new Date()
-  const todayStart = new Date(now)
-  todayStart.setHours(0, 0, 0, 0)
-  const tomorrowEnd = new Date(now)
-  tomorrowEnd.setDate(tomorrowEnd.getDate() + 2)
-  tomorrowEnd.setHours(23, 59, 59, 999)
+  const now = new Date().toISOString()
 
-  const { data: fixtures } = await supabase
+  // Fetch next 8 upcoming fixtures from now
+  const { data: upcomingFixtures } = await supabase
     .from('fixtures')
     .select(`
       *,
       home_team:teams!fixtures_home_team_id_fkey(*),
       away_team:teams!fixtures_away_team_id_fkey(*)
     `)
-    .gte('kickoff_et', todayStart.toISOString())
-    .lte('kickoff_et', tomorrowEnd.toISOString())
+    .eq('status', 'scheduled')
+    .gte('kickoff_et', now)
     .order('kickoff_et', { ascending: true })
+    .limit(8)
 
+  // Fetch any live fixtures
   const { data: liveFixtures } = await supabase
     .from('fixtures')
     .select(`
@@ -34,6 +32,19 @@ export default async function DashboardPage() {
     .eq('status', 'live')
     .order('kickoff_et', { ascending: true })
 
+  // Fetch last 4 finished fixtures
+  const { data: recentFixtures } = await supabase
+    .from('fixtures')
+    .select(`
+      *,
+      home_team:teams!fixtures_home_team_id_fkey(*),
+      away_team:teams!fixtures_away_team_id_fkey(*)
+    `)
+    .eq('status', 'finished')
+    .order('kickoff_et', { ascending: false })
+    .limit(4)
+
+  // Get current user
   const { data: { user } } = await supabase.auth.getUser()
 
   let userStats = null
@@ -55,14 +66,11 @@ export default async function DashboardPage() {
     userPicks = picks ?? []
   }
 
-  const allFixtures = [
-    ...(liveFixtures ?? []),
-    ...(fixtures ?? []).filter(f => f.status !== 'live'),
-  ]
-
   return (
     <DashboardClient
-      fixtures={allFixtures}
+      upcomingFixtures={upcomingFixtures ?? []}
+      liveFixtures={liveFixtures ?? []}
+      recentFixtures={recentFixtures ?? []}
       userStats={userStats}
       userPicks={userPicks}
       isLoggedIn={!!user}

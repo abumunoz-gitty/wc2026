@@ -7,18 +7,23 @@ import { FixtureCard } from '@/components/fixtures/FixtureCard'
 import { formatDateLabel } from '@/lib/dates'
 
 interface Props {
-  fixtures: Fixture[]
+  upcomingFixtures: Fixture[]
+  liveFixtures: Fixture[]
+  recentFixtures: Fixture[]
   userStats: { total_points: number; display_name: string } | null
   userPicks: Pick[]
   isLoggedIn: boolean
 }
 
-export function DashboardClient({ fixtures, userStats, userPicks, isLoggedIn }: Props) {
+export function DashboardClient({
+  upcomingFixtures,
+  liveFixtures,
+  recentFixtures,
+  userStats,
+  userPicks,
+  isLoggedIn,
+}: Props) {
   const [picks, setPicks] = useState<Pick[]>(userPicks)
-
-  const liveFixtures = fixtures.filter(f => f.status === 'live')
-  const upcomingFixtures = fixtures.filter(f => f.status === 'scheduled')
-  const finishedFixtures = fixtures.filter(f => f.status === 'finished')
 
   const exactScores = picks.filter(p => p.points_earned === 3).length
   const correctResults = picks.filter(p => p.points_earned != null).length
@@ -54,6 +59,7 @@ export function DashboardClient({ fixtures, userStats, userPicks, isLoggedIn }: 
     return picks.find(p => p.fixture_id === fixtureId)
   }
 
+  // Group upcoming fixtures by date
   const upcomingByDate: Record<string, Fixture[]> = {}
   for (const f of upcomingFixtures) {
     const label = formatDateLabel(f.kickoff_et)
@@ -65,6 +71,7 @@ export function DashboardClient({ fixtures, userStats, userPicks, isLoggedIn }: 
 
   return (
     <div>
+      {/* Metric cards */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(4, 1fr)',
@@ -97,6 +104,7 @@ export function DashboardClient({ fixtures, userStats, userPicks, isLoggedIn }: 
         />
       </div>
 
+      {/* Live games */}
       {liveFixtures.length > 0 && (
         <section style={{ marginBottom: '20px' }}>
           <SectionLabel>Live now</SectionLabel>
@@ -113,10 +121,11 @@ export function DashboardClient({ fixtures, userStats, userPicks, isLoggedIn }: 
         </section>
       )}
 
+      {/* Upcoming grouped by date */}
       {Object.entries(upcomingByDate).map(([dateLabel, dayFixtures]) => (
         <section key={dateLabel} style={{ marginBottom: '20px' }}>
           <SectionLabel>
-            {dateLabel === todayLabel ? `Today — ${dateLabel}` : dateLabel}
+            {dateLabel === todayLabel ? `Today — ${dateLabel}` : `Upcoming — ${dateLabel}`}
           </SectionLabel>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
             {dayFixtures.map(f => (
@@ -132,11 +141,12 @@ export function DashboardClient({ fixtures, userStats, userPicks, isLoggedIn }: 
         </section>
       ))}
 
-      {finishedFixtures.length > 0 && (
+      {/* Recent results */}
+      {recentFixtures.length > 0 && (
         <section style={{ marginBottom: '20px' }}>
           <SectionLabel>Recent results</SectionLabel>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-            {finishedFixtures.map(f => (
+            {recentFixtures.map(f => (
               <FixtureCard
                 key={f.id}
                 fixture={f}
@@ -148,7 +158,8 @@ export function DashboardClient({ fixtures, userStats, userPicks, isLoggedIn }: 
         </section>
       )}
 
-      {fixtures.length === 0 && (
+      {/* Empty state — only show if nothing at all */}
+      {upcomingFixtures.length === 0 && liveFixtures.length === 0 && recentFixtures.length === 0 && (
         <div style={{
           textAlign: 'center',
           padding: '48px 24px',
@@ -156,8 +167,8 @@ export function DashboardClient({ fixtures, userStats, userPicks, isLoggedIn }: 
           fontSize: '14px',
         }}>
           <div style={{ fontSize: '32px', marginBottom: '12px' }}>⚽</div>
-          <div style={{ color: '#fff', fontWeight: 500, marginBottom: '6px' }}>No games today</div>
-          <div>Check the schedule for upcoming fixtures</div>
+          <div style={{ color: '#fff', fontWeight: 500, marginBottom: '6px' }}>No fixtures found</div>
+          <div>The database may still be loading</div>
         </div>
       )}
     </div>
@@ -181,7 +192,10 @@ function MetricCard({
         <span style={{ color: 'var(--cyan)', opacity: 0.8 }}>{icon}</span>
         {label}
       </div>
-      <div className="font-stat" style={{ fontSize: '26px', color: '#fff', lineHeight: 1, marginBottom: '4px' }}>
+      <div
+        className="font-stat"
+        style={{ fontSize: '26px', color: '#fff', lineHeight: 1, marginBottom: '4px' }}
+      >
         {value}
       </div>
       <div style={{ fontSize: '11px', color: '#fff', opacity: 0.55 }}>{sub}</div>
