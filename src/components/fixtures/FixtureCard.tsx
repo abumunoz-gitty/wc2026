@@ -84,7 +84,7 @@ export function FixtureCard({
         {/* Meta row */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
           <span style={{ fontSize: '10px', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-            {fixture.stage === 'group' ? `Group ${fixture.home_team.country_code} · Matchday` : fixture.stage.toUpperCase()}
+            {fixture.stage === 'group' ? `Group ${(fixture as any).group?.name ?? ''} · Matchday` : fixture.stage.toUpperCase()}
           </span>
           {isLive ? (
             <span style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: '#f87171', fontWeight: 500 }}>
@@ -117,9 +117,9 @@ export function FixtureCard({
             )}
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexDirection: 'row-reverse' }}>
-            <span style={{ fontSize: '20px', lineHeight: 1 }}>{fixture.away_team.flag_emoji}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', justifyContent: 'flex-end' }}>
             <span style={{ fontSize: '14px', fontWeight: 500, color: '#fff' }}>{fixture.away_team.name}</span>
+            <span style={{ fontSize: '20px', lineHeight: 1 }}>{fixture.away_team.flag_emoji}</span>
           </div>
         </div>
 
