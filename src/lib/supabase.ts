@@ -1,16 +1,7 @@
-import { createBrowserClient } from '@supabase/ssr'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
-// Browser client — use in Client Components
-export function createClient() {
-  return createBrowserClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-  )
-}
-
-// Server client — use in Server Components, Route Handlers, Server Actions
+// Server client — use in Server Components and Route Handlers only
 export async function createServerSupabaseClient() {
   const cookieStore = await cookies()
   return createServerClient(
