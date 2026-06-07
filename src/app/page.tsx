@@ -12,7 +12,16 @@ export default async function DashboardPage() {
   const { data: upcomingFixtures } = await supabase
     .from('fixtures')
     .select(`
-      *,
+      id,
+      kickoff_et,
+      stage,
+      status,
+      home_score,
+      away_score,
+      broadcasters_us,
+      venue,
+      group_id,
+      group_name,
       home_team:teams!fixtures_home_team_id_fkey(*),
       away_team:teams!fixtures_away_team_id_fkey(*)
     `)
@@ -25,7 +34,16 @@ export default async function DashboardPage() {
   const { data: liveFixtures } = await supabase
     .from('fixtures')
     .select(`
-      *,
+      id,
+      kickoff_et,
+      stage,
+      status,
+      home_score,
+      away_score,
+      broadcasters_us,
+      venue,
+      group_id,
+      group_name,
       home_team:teams!fixtures_home_team_id_fkey(*),
       away_team:teams!fixtures_away_team_id_fkey(*)
     `)
@@ -36,7 +54,16 @@ export default async function DashboardPage() {
   const { data: recentFixtures } = await supabase
     .from('fixtures')
     .select(`
-      *,
+      id,
+      kickoff_et,
+      stage,
+      status,
+      home_score,
+      away_score,
+      broadcasters_us,
+      venue,
+      group_id,
+      group_name,
       home_team:teams!fixtures_home_team_id_fkey(*),
       away_team:teams!fixtures_away_team_id_fkey(*)
     `)
@@ -65,6 +92,8 @@ export default async function DashboardPage() {
     userStats = stats
     userPicks = picks ?? []
   }
+console.log('First fixture:', JSON.stringify(upcomingFixtures?.[0], null, 2))
+console.log('group_name value:', (upcomingFixtures?.[0] as any)?.group_name)
 
   return (
     <DashboardClient
