@@ -97,9 +97,9 @@ console.log('group_name value:', (upcomingFixtures?.[0] as any)?.group_name)
 
   return (
     <DashboardClient
-      upcomingFixtures={upcomingFixtures ?? []}
-      liveFixtures={liveFixtures ?? []}
-      recentFixtures={recentFixtures ?? []}
+      upcomingFixtures={(upcomingFixtures ?? []) as any}
+      liveFixtures={(liveFixtures ?? []) as any}
+      recentFixtures={(recentFixtures ?? []) as any}
       userStats={userStats}
       userPicks={userPicks}
       isLoggedIn={!!user}
