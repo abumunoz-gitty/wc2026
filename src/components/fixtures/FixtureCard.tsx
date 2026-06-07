@@ -84,7 +84,7 @@ export function FixtureCard({
         {/* Meta row */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
           <span style={{ fontSize: '10px', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-            {fixture.stage === 'group' ? `Group ${fixture.group_name ?? ''} · Matchday` : fixture.stage.toUpperCase()}
+            {fixture.stage === 'group' ? `Group ${(fixture as any).group_name ?? ''} · Matchday` : fixture.stage.toUpperCase()}
           </span>
           {isLive ? (
             <span style={{ display: 'flex', alignItems: 'center', gap: '5px', fontSize: '11px', color: '#f87171', fontWeight: 500 }}>
