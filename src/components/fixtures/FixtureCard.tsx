@@ -14,6 +14,7 @@ interface Props {
   showPickInput?: boolean
   onPickSave?: (fixtureId: string, home: number, away: number) => Promise<void>
   aiPreview?: string
+  isFollowedFixture?: boolean
 }
 
 export function FixtureCard({
@@ -22,6 +23,7 @@ export function FixtureCard({
   showPickInput = false,
   onPickSave,
   aiPreview,
+  isFollowedFixture = false,
 }: Props) {
   const [homeScore, setHomeScore] = useState(pick?.pred_home_score ?? 0)
   const [awayScore, setAwayScore] = useState(pick?.pred_away_score ?? 0)
@@ -83,7 +85,18 @@ export function FixtureCard({
       <div style={{ position: 'relative', zIndex: 1 }}>
         {/* Meta row */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-          <span style={{ fontSize: '10px', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
+          <span style={{ fontSize: '10px', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.06em', display: 'flex', alignItems: 'center', gap: '5px' }}>
+            {isFollowedFixture && (
+              <span style={{
+                fontSize: '9px', fontWeight: 500, color: '#00E8E4',
+                background: 'rgba(0,232,228,0.12)',
+                border: '0.5px solid rgba(0,232,228,0.3)',
+                borderRadius: '4px', padding: '1px 5px',
+                letterSpacing: '0.04em',
+              }}>
+                Following
+              </span>
+            )}
             {fixture.stage === 'group' ? `Group ${(fixture as any).group_name ?? ''} · Matchday` : fixture.stage.toUpperCase()}
           </span>
           {isLive ? (

@@ -13,6 +13,7 @@ interface Props {
   userStats: { total_points: number; display_name: string } | null
   userPicks: Pick[]
   isLoggedIn: boolean
+  followedTeamIds: string[]
 }
 
 export function DashboardClient({
@@ -22,6 +23,7 @@ export function DashboardClient({
   userStats,
   userPicks,
   isLoggedIn,
+  followedTeamIds,
 }: Props) {
   const [picks, setPicks] = useState<Pick[]>(userPicks)
 
@@ -121,6 +123,42 @@ export function DashboardClient({
         </section>
       )}
 
+      {/* Followed team fixtures */}
+      {followedTeamIds.length > 0 && (() => {
+        const followedFixtures = upcomingFixtures.filter(f =>
+          followedTeamIds.includes((f.home_team as any)?.id) ||
+          followedTeamIds.includes((f.away_team as any)?.id)
+        )
+        if (followedFixtures.length === 0) return null
+        return (
+          <section style={{ marginBottom: '20px' }}>
+            <div style={{
+              fontSize: '11px', fontWeight: 500, color: '#00E8E4',
+              textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '10px',
+              display: 'flex', alignItems: 'center', gap: '6px',
+            }}>
+              <span style={{
+                width: '6px', height: '6px', borderRadius: '50%',
+                background: '#00E8E4', display: 'inline-block',
+              }} />
+              Your teams
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              {followedFixtures.map(f => (
+                <FixtureCard
+                  key={f.id}
+                  fixture={f}
+                  pick={getPickForFixture(f.id)}
+                  showPickInput={isLoggedIn}
+                  onPickSave={handlePickSave}
+                  isFollowedFixture={true}
+                />
+              ))}
+            </div>
+          </section>
+        )
+      })()}
+      
       {/* Upcoming grouped by date */}
       {Object.entries(upcomingByDate).map(([dateLabel, dayFixtures]) => (
         <section key={dateLabel} style={{ marginBottom: '20px' }}>
