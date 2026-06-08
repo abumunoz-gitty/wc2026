@@ -8,7 +8,6 @@ export default async function DashboardPage() {
 
   const now = new Date().toISOString()
 
-  // Fetch next 8 upcoming fixtures from now
   const { data: upcomingFixtures } = await supabase
     .from('fixtures')
     .select(`
@@ -30,7 +29,6 @@ export default async function DashboardPage() {
     .order('kickoff_et', { ascending: true })
     .limit(8)
 
-  // Fetch any live fixtures
   const { data: liveFixtures } = await supabase
     .from('fixtures')
     .select(`
@@ -50,7 +48,6 @@ export default async function DashboardPage() {
     .eq('status', 'live')
     .order('kickoff_et', { ascending: true })
 
-  // Fetch last 4 finished fixtures
   const { data: recentFixtures } = await supabase
     .from('fixtures')
     .select(`
@@ -71,11 +68,11 @@ export default async function DashboardPage() {
     .order('kickoff_et', { ascending: false })
     .limit(4)
 
-  // Get current user
   const { data: { user } } = await supabase.auth.getUser()
 
   let userStats = null
   let userPicks: any[] = []
+  let followedTeamIds: string[] = []
 
   if (user) {
     const { data: stats } = await supabase
@@ -89,8 +86,14 @@ export default async function DashboardPage() {
       .select('*')
       .eq('user_id', user.id)
 
+    const { data: followed } = await supabase
+      .from('followed_teams')
+      .select('team_id')
+      .eq('user_id', user.id)
+
     userStats = stats
     userPicks = picks ?? []
+    followedTeamIds = (followed ?? []).map((f: any) => f.team_id)
   }
 
   return (
@@ -101,6 +104,7 @@ export default async function DashboardPage() {
       userStats={userStats}
       userPicks={userPicks}
       isLoggedIn={!!user}
+      followedTeamIds={followedTeamIds}
     />
   )
 }
