@@ -92,8 +92,6 @@ export default async function DashboardPage() {
     userStats = stats
     userPicks = picks ?? []
   }
-console.log('First fixture:', JSON.stringify(upcomingFixtures?.[0], null, 2))
-console.log('group_name value:', (upcomingFixtures?.[0] as any)?.group_name)
 
   return (
     <DashboardClient
