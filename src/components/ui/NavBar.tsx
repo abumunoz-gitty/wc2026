@@ -4,13 +4,14 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 const TABS = [
-  { label: 'Dashboard', href: '/' },
-  { label: 'Picks',     href: '/picks' },
-  { label: 'Standings', href: '/leaderboard' },
-  { label: 'Bracket',   href: '/bracket' },
-  { label: 'Groups',    href: '/groups' },
-  { label: 'Awards',    href: '/awards' },
-  { label: 'Teams',     href: '/teams' },
+  { label: 'Dashboard',  href: '/' },
+  { label: 'Picks',      href: '/picks' },
+  { label: 'My Bracket', href: '/bracket-picks' },
+  { label: 'Standings',  href: '/leaderboard' },
+  { label: 'Bracket',    href: '/bracket' },
+  { label: 'Groups',     href: '/groups' },
+  { label: 'Awards',     href: '/awards' },
+  { label: 'Teams',      href: '/teams' },
 ]
 
 export function NavBar() {
