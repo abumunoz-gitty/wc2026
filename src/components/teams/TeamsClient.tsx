@@ -162,21 +162,40 @@ function TeamRow({
   onFollow: () => void
   onSelect: () => void
 }) {
+  const [hovered, setHovered] = useState(false)
+
   return (
-    <div style={{
-      display: 'flex', alignItems: 'center', gap: '12px',
-      padding: '12px 14px', borderRadius: '10px',
-      background: isFollowed ? 'rgba(0,232,228,0.06)' : 'rgba(255,255,255,0.05)',
-      border: isFollowed ? '0.5px solid rgba(0,232,228,0.2)' : '0.5px solid rgba(255,255,255,0.08)',
-      cursor: 'pointer',
-      transition: 'background 0.15s',
-    }}>
+    <div
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        display: 'flex', alignItems: 'center', gap: '12px',
+        padding: '12px 14px', borderRadius: '10px',
+        background: isFollowed
+          ? 'rgba(0,232,228,0.06)'
+          : hovered
+          ? 'rgba(0,232,228,0.07)'
+          : 'rgba(255,255,255,0.05)',
+        border: isFollowed
+          ? '0.5px solid rgba(0,232,228,0.2)'
+          : hovered
+          ? '0.5px solid rgba(0,232,228,0.25)'
+          : '0.5px solid rgba(255,255,255,0.08)',
+        cursor: 'pointer',
+        transition: 'all 0.15s',
+      }}
+    >
       <div
         onClick={onSelect}
         style={{ display: 'flex', alignItems: 'center', gap: '12px', flex: 1 }}
       >
         <span style={{ fontSize: '24px', lineHeight: 1 }}>{team.flag_emoji}</span>
-        <span style={{ fontSize: '14px', color: '#fff', fontWeight: isFollowed ? 500 : 400 }}>
+        <span style={{
+          fontSize: '14px',
+          color: hovered || isFollowed ? '#fff' : '#8b95b0',
+          fontWeight: isFollowed ? 500 : 400,
+          transition: 'color 0.15s',
+        }}>
           {team.name}
         </span>
       </div>
@@ -233,23 +252,38 @@ function TeamModal({
       {/* Modal */}
       <div style={{
         position: 'fixed',
-        bottom: 0, left: 0, right: 0,
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
         background: '#0d1220',
-        border: '0.5px solid rgba(255,255,255,0.12)',
-        borderRadius: '20px 20px 0 0',
-        padding: '24px 20px 40px',
+        border: '0.5px solid rgba(255,255,255,0.18)',
+        borderRadius: '16px',
+        padding: '24px 20px',
         zIndex: 101,
         maxHeight: '80vh',
         overflowY: 'auto',
-        maxWidth: '680px',
-        margin: '0 auto',
+        width: '90%',
+        maxWidth: '520px',
+        boxShadow: '0 24px 80px rgba(0,0,0,0.6)',
       }}>
-        {/* Handle */}
-        <div style={{
-          width: '36px', height: '4px', borderRadius: '2px',
-          background: 'rgba(255,255,255,0.2)',
-          margin: '0 auto 20px',
-        }} />
+        {/* Close button */}
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '16px' }}>
+          <button
+            onClick={onClose}
+            style={{
+              background: 'rgba(255,255,255,0.08)',
+              border: '0.5px solid rgba(255,255,255,0.15)',
+              borderRadius: '50%',
+              width: '28px', height: '28px',
+              cursor: 'pointer',
+              color: 'var(--muted)',
+              fontSize: '14px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}
+          >
+            x
+          </button>
+        </div>
 
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: '20px' }}>
