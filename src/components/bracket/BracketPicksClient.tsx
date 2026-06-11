@@ -53,11 +53,27 @@ const R32_MATCHUPS: { a: Slot; b: Slot }[] = [
   { a: { type: 'runner_up', group: 'D' }, b: { type: 'runner_up',  group: 'G' } },
 ]
 
+function resolveSlots(
+  matchups: { a: Slot; b: Slot }[],
+  groupPicks: Record<string, string>,
+  advancingThird: string[],
+  teams: Team[]
+): { teamA: Team | undefined; teamB: Team | undefined }[] {
+  const usedThird = new Set<string>()
+
+  return matchups.map(matchup => {
+    const teamA = resolveSlot(matchup.a, groupPicks, advancingThird, teams, usedThird)
+    const teamB = resolveSlot(matchup.b, groupPicks, advancingThird, teams, usedThird)
+    return { teamA, teamB }
+  })
+}
+
 function resolveSlot(
   slot: Slot,
   groupPicks: Record<string, string>,
   advancingThird: string[],
-  teams: Team[]
+  teams: Team[],
+  usedThird?: Set<string>
 ): Team | undefined {
   if (slot.type === 'winner') {
     const teamId = groupPicks[`${slot.group}_1st`]
@@ -70,7 +86,8 @@ function resolveSlot(
   if (slot.type === 'best_third' && slot.groups) {
     for (const g of slot.groups) {
       const thirdId = groupPicks[`${g}_3rd`]
-      if (thirdId && advancingThird.includes(thirdId)) {
+      if (thirdId && advancingThird.includes(thirdId) && !usedThird?.has(thirdId)) {
+        usedThird?.add(thirdId)
         return teams.find(t => t.id === thirdId)
       }
     }
@@ -497,23 +514,19 @@ export function BracketPicksClient({ teams, groups, existingPick, isLoggedIn }: 
 
           {/* Round of 32 */}
           <BracketRound label="Round of 32">
-            {R32_MATCHUPS.map((matchup, i) => {
-              const teamA = resolveSlot(matchup.a, groupPicks, advancingThird, teams)
-              const teamB = resolveSlot(matchup.b, groupPicks, advancingThird, teams)
-              return (
-                <MatchupCard
-                  key={i}
-                  matchNum={73 + i}
-                  slotA={slotLabel(matchup.a)}
-                  slotB={slotLabel(matchup.b)}
-                  teamA={teamA}
-                  teamB={teamB}
-                  winner={r32Picks[i]}
-                  locked={locked || !isLoggedIn}
-                  onPick={(teamId) => setKnockoutPick('r32', i, teamId)}
-                />
-              )
-            })}
+            {resolveSlots(R32_MATCHUPS, groupPicks, advancingThird, teams).map(({ teamA, teamB }, i) => (
+              <MatchupCard
+                key={i}
+                matchNum={73 + i}
+                slotA={slotLabel(R32_MATCHUPS[i].a)}
+                slotB={slotLabel(R32_MATCHUPS[i].b)}
+                teamA={teamA}
+                teamB={teamB}
+                winner={r32Picks[i]}
+                locked={locked || !isLoggedIn}
+                onPick={(teamId) => setKnockoutPick('r32', i, teamId)}
+              />
+            ))}
           </BracketRound>
 
           {/* Round of 16 */}
