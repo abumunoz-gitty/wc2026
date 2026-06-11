@@ -284,6 +284,7 @@ export function BracketPicksClient({ teams, groups, existingPick, isLoggedIn }: 
     payload.qf_picks  = qfPicks
     payload.sf_picks  = sfPicks
     payload.champion  = champion || null
+    payload.locked = false
 
     const res = await fetch('/api/bracket', {
       method: 'POST',
